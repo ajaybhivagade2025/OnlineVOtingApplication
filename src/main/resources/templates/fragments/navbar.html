@@ -1,0 +1,94 @@
+<nav th:fragment="navbar" class="navbar" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="navbar-container">
+        <div class="logo">VotingApp</div>
+        <ul class="nav-links">
+
+
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/voter/register}">Register</a></li>
+            <li><a th:href="@{/voter/login}">Voter Login</a></li>
+            <li><a th:href="@{/admin/login}">Admin</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+    </div>
+</nav>
+
+<style>
+    /* Navbar styles */
+    .navbar {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background 0.3s ease;
+        z-index: 1000;
+        background: transparent;
+    }
+    .navbar.scrolled {
+        background: #0041a3;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1200px;
+    }
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+    }
+    .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+    }
+    .nav-links li a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    .nav-links li a:hover {
+        color: #00c3ff;
+    }
+    .hamburger {
+        display: none;
+        font-size: 2rem;
+        color: white;
+        cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+            position: absolute;
+            top: 60px; right: 30px;
+            background: #0041a3;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .nav-links.active {
+            display: flex;
+        }
+        .hamburger {
+            display: block;
+        }
+    }
+</style>
+
+<script>
+    function toggleMenu() {
+        document.querySelector(".nav-links").classList.toggle("active");
+    }
+    window.addEventListener("scroll", function() {
+        document.querySelector(".navbar").classList.toggle("scrolled", window.scrollY > 50);
+    });
+</script>

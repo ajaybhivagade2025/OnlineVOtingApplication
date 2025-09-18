@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Success</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2 th:text="${message}">Success</h2>
+    <a th:href="@{/vote}">Go to vote</a>
+</div>
+</body>
+</html>

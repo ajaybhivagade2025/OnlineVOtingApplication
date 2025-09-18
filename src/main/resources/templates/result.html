@@ -1,0 +1,14 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vote Result</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2 th:text="${message}">Result</h2>
+    <a th:href="@{/vote}">Back</a>
+</div>
+</body>
+</html>

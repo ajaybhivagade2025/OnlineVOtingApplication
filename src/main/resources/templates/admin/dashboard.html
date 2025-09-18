@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f4f7fb;
+            color: #333;
+        }
+
+        /* ===== Layout ===== */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            width: 220px;
+            background: #0041a3;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ===== Content ===== */
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        /* ===== Stats Cards ===== */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 2rem;
+            color: #0041a3;
+        }
+
+        .card p {
+            margin: 5px 0 0;
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        /* ===== Sections ===== */
+        .section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #0041a3;
+            border-left: 4px solid #0041a3;
+            padding-left: 10px;
+        }
+
+        /* ===== Tables ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background: #f1f4f9;
+            font-weight: bold;
+            color: #0041a3;
+        }
+
+        table tr:hover {
+            background: #f9fbff;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="dashboard">
+    <div class="sidebar">
+        <h3>Admin Menu</h3>
+        <a th:href="@{/admin/dashboard}">Dashboard</a>
+        <a th:href="@{/admin/add-candidate}">Add Candidate</a>
+        <a href="#">Manage Voters</a>
+        <a href="#">Blockchain Explorer</a>
+        <a th:href="@{/admin/logout}">Logout</a>
+    </div>
+
+    <div class="content">
+        <!-- Stats -->
+        <div class="stats">
+            <div class="card">
+                <h2 th:text="${#lists.size(candidates)}">0</h2>
+                <p>Total Candidates</p>
+            </div>
+            <div class="card">
+                <h2 th:text="${#lists.size(voters)}">0</h2>
+                <p>Total Voters</p>
+            </div>
+            <div class="card">
+                <h2 th:text="${votesCast}">0</h2>
+                <p>Votes Cast</p>
+            </div>
+            <div class="card">
+                <h2 th:text="${#lists.size(blocks)}">0</h2>
+                <p>Blocks in Chain</p>
+            </div>
+        </div>
+
+        <!-- Candidates -->
+        <div class="section">
+            <h3>Candidates</h3>
+            <table>
+                <tr><th>Name</th><th>Party</th><th>Votes</th></tr>
+                <tr th:each="candidate : ${candidates}">
+                    <td th:text="${candidate.name}"></td>
+                    <td th:text="${candidate.party}"></td>
+                    <td th:text="${candidate.voteCount}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Blockchain -->
+        <div class="section">
+            <h3>Blockchain (Latest Blocks)</h3>
+            <table>
+                <tr><th>ID</th><th>Hash</th><th>Previous</th><th>Timestamp</th></tr>
+                <tr th:each="block : ${blocks}">
+                    <td th:text="${block.id}"></td>
+                    <td th:text="${block.currentHash}"></td>
+                    <td th:text="${block.previousHash}"></td>
+                    <td th:text="${block.timestamp}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
