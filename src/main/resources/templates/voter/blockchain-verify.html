@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blockchain Verification</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Blockchain Verification</h1>
+
+    <div th:if="${isValid}" style="color:green; font-weight:bold;">
+        ✅ Blockchain is VALID.
+    </div>
+    <div th:if="${not isValid}" style="color:red; font-weight:bold;">
+        ❌ Blockchain is INVALID. Data might be tampered.
+    </div>
+
+    <table border="1" cellpadding="10" style="width:100%; margin-top:20px;">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Previous Hash</th>
+            <th>Current Hash</th>
+            <th>Data</th>
+            <th>Timestamp</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="block : ${blocks}">
+            <td th:text="${block.id}"></td>
+            <td th:text="${block.previousHash}"></td>
+            <td th:text="${block.currentHash}"></td>
+            <td th:text="${block.data}"></td>
+            <td th:text="${#temporals.format(block.timestamp,'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a th:href="@{/voter/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+</body>
+</html>

@@ -21,7 +21,6 @@ public class VotingService {
         @Autowired private CandidateRepository candidateRepo;
         @Autowired private VoteRepository voteRepo;
         @Autowired private BlockchainService blockchainService;
-        @Autowired private NotificationService notificationService;
 
         public String castVote(String nationalId, Long candidateId) {
             Voter voter = voterRepo.findByNationalId(nationalId)
@@ -53,11 +52,12 @@ public class VotingService {
 
             // notify voter with transaction hash
             String message = "Your vote is recorded. Transaction hash: " + block.getCurrentHash();
-            notificationService.notifyByEmail(voter.getEmail(), message);
-            notificationService.notifyBySms(voter.getMobile(), message);
 
             return block.getCurrentHash();
         }
+
+    
+
     }
 
 

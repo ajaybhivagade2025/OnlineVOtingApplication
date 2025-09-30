@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Voter Login - Online Voting System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        /* Full-page patriotic background */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Semi-transparent login container */
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #0041a3;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #0041a3;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0041a3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #002f6c;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        p a {
+            color: #0041a3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        p a:hover {
+            text-decoration: underline;
+        }
+
+        .message-box {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .message-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Optional: Add subtle patriotic gradient overlay */
+        .container::before {
+            content: '';
+            position: absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background: linear-gradient(to bottom right, rgba(255,165,0,0.1), rgba(0,128,0,0.1));
+            border-radius: 12px;
+            z-index:-1;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Voter Login</h1>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${success}" class="message-box message-success" th:text="${success}"></div>
+    <div th:if="${error}" class="message-box message-error" th:text="${error}"></div>
+
+    <form th:action="@{/voter/login}" method="post">
+        <div class="form-group">
+            <label>National ID</label>
+            <input type="text" name="nationalId" placeholder="Enter your National ID" required />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter your password" required />
+        </div>
+        <button type="submit">Login</button>
+    </form>
+
+    <p>Not registered? <a th:href="@{/voter/register}">Register here</a></p>
+</div>
+</body>
+</html>

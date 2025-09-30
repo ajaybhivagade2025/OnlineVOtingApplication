@@ -1,13 +1,27 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Welcome - Online Voting System (India)</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
+        * {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --saffron: #FF9933;
+            --white: #FFFFFF;
+            --green: #138808;
+            --navy: #000080;
+            --light-blue: #E6F0FF;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            overflow-x: hidden;
         }
 
         /* ===== Government Header ===== */
@@ -16,14 +30,16 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            background: linear-gradient(90deg, #ff9933, #ffffff, #138808);
+            background: linear-gradient(90deg, var(--saffron), var(--white), var(--green));
             color: #222;
             padding: 12px 20px;
-            border-bottom: 3px solid #0041a3;
+            border-bottom: 3px solid var(--navy);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .gov-header img {
             height: 50px;
+            animation: rotateSlow 20s linear infinite;
         }
 
         .gov-header h1 {
@@ -37,6 +53,42 @@
             font-size: 0.9rem;
             margin: 0;
             color: #333;
+        }
+
+        /* ===== Navigation Bar ===== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--navy);
+            padding: 10px 5%;
+            color: white;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         /* ===== Hero Section ===== */
@@ -53,56 +105,273 @@
             overflow: hidden;
         }
 
-        /* Tricolor + flag background */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+
+        /* Tricolor background with opacity */
         .hero::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background:
                 linear-gradient(to bottom,
-                    rgba(255,153,51,0.85),
-                    rgba(255,255,255,0.85),
-                    rgba(19,136,8,0.85)
+                    rgba(255, 153, 51, 0.85),
+                    rgba(255, 255, 255, 0.85),
+                    rgba(19, 136, 8, 0.85)
                 ),
-                url('https://img.freepik.com/free-vector/india-flag-colors-wave-background_1017-38259.jpg')
+                url('https://images.unsplash.com/photo-1529255484355-cb73c33c04bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80')
                 no-repeat center center / cover;
-            z-index: -1;
+            z-index: 1;
         }
 
         .hero h1 {
-            font-size: 2.8rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #222;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--navy);
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.7);
         }
 
         .hero p {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             margin-bottom: 40px;
             color: #333;
+            font-weight: 500;
         }
 
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 25px;
             flex-wrap: wrap;
+            margin-top: 30px;
         }
 
-        .buttons a {
-            padding: 14px 32px;
-            background: #0041a3;
+        .btn {
+            padding: 16px 36px;
+            background: var(--navy);
             color: white;
-            border-radius: 8px;
+            border-radius: 50px;
             font-weight: bold;
             text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
         }
 
-        .buttons a:hover {
-            background: #0066ff;
-            transform: translateY(-3px);
+        .btn:hover {
+            background: #003399;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn-voter {
+            background: var(--saffron);
+        }
+
+        .btn-voter:hover {
+            background: #e67e22;
+        }
+
+        .btn-admin {
+            background: var(--green);
+        }
+
+        .btn-admin:hover {
+            background: #0e6d06;
+        }
+
+        /* ===== Features Section ===== */
+        .features {
+            padding: 80px 5%;
+            background: var(--light-blue);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--navy);
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--saffron), var(--white), var(--green));
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--navy);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--navy);
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* ===== Stats Section ===== */
+        .stats {
+            padding: 80px 5%;
+            background: linear-gradient(to right, var(--saffron), var(--white), var(--green));
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+
+        .stat-text {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            background: var(--navy);
+            color: white;
+            padding: 40px 5%;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--saffron);
+        }
+
+        .footer-section p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* ===== Responsive Design ===== */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -117,22 +386,110 @@
     </div>
 </header>
 
-<!-- ===== Navbar Fragment ===== -->
-<div th:replace="~{fragments/navbar :: navbar}"></div>
+<!-- ===== Navbar ===== -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-vote-yea"></i>
+        <span>Digital Bharat Vote</span>
+    </div>
+    <div class="nav-links">
+        <a href="#"><i class="fas fa-home"></i> Home</a>
+        <a href="#"><i class="fas fa-info-circle"></i> About</a>
+        <a href="#"><i class="fas fa-newspaper"></i> News</a>
+        <a href="#"><i class="fas fa-headset"></i> Support</a>
+    </div>
+</nav>
 
 <!-- ===== Hero Section ===== -->
 <section class="hero">
-    <h1>Welcome to the Online Voting System</h1>
-    <p>Empowered by Blockchain • Transparent • Secure</p>
-    <div class="buttons">
-        <a th:href="@{/voter/register}">Register as Voter</a>
-        <a th:href="@{/voter/login}">Voter Login</a>
-        <a th:href="@{/admin/login}">Admin Login</a>
+    <div class="hero-content">
+        <h1>Your Vote Powers Democracy</h1>
+        <p>Secure, Transparent, and Accessible Voting for Every Indian Citizen</p>
+        <div class="buttons">
+            <!-- CORRECTED: Using proper Thymeleaf syntax with th:href -->
+            <a th:href="@{/voter/register}" class="btn btn-voter"><i class="fas fa-user-plus"></i> Register as Voter</a>
+            <a th:href="@{/voter/login}" class="btn"><i class="fas fa-sign-in-alt"></i> Voter Login</a>
+            <a th:href="@{/admin/login}" class="btn btn-admin"><i class="fas fa-lock"></i> Admin Login</a>
+        </div>
     </div>
 </section>
 
-<!-- ===== Footer Fragment ===== -->
-<div th:replace="~{fragments/footer :: footer}"></div>
+<!-- ===== Features Section ===== -->
+<section class="features">
+    <h2 class="section-title">Why Choose Digital Voting?</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Blockchain Security</h3>
+            <p>Our voting system uses advanced blockchain technology to ensure your vote is secure, tamper-proof, and verifiable.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>Accessible Anywhere</h3>
+            <p>Vote from the comfort of your home using your computer or smartphone. No need to wait in long queues.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-fingerprint"></i>
+            </div>
+            <h3>Biometric Verification</h3>
+            <p>Advanced biometric authentication ensures one person, one vote, maintaining the integrity of the electoral process.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Stats Section ===== -->
+<section class="stats">
+    <h2 class="section-title">Digital Voting in Numbers</h2>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">10M+</div>
+            <div class="stat-text">Registered Voters</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">99.97%</div>
+            <div class="stat-text">System Uptime</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">28</div>
+            <div class="stat-text">States & Territories</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-text">Security Breaches</div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>Digital Bharat Vote is an initiative by the Government of India to make voting more accessible, secure, and transparent through blockchain technology.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <p><a href="#" style="color: white;">Voter Registration</a></p>
+            <p><a href="#" style="color: white;">Check Voting Status</a></p>
+            <p><a href="#" style="color: white;">Election Schedule</a></p>
+            <p><a href="#" style="color: white;">FAQ</a></p>
+        </div>
+        <div class="footer-section">
+            <h3>Contact Us</h3>
+            <p><i class="fas fa-phone"></i> Toll-Free: 1800-123-4567</p>
+            <p><i class="fas fa-envelope"></i> support@digitalbharatvote.gov.in</p>
+            <p><i class="fas fa-map-marker-alt"></i> Election Commission of India, New Delhi</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2023 Government of India - Online Voting System. All rights reserved.</p>
+    </div>
+</footer>
 
 </body>
 </html>

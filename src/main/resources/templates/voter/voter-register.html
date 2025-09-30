@@ -77,9 +77,11 @@
     <!-- Error message -->
     <div th:if="${error}" class="message error" th:text="${error}"></div>
 
+<!--    <form th:action="@{/voter/voter/register}" th:object="${voter}" method="post">-->
+
     <form th:action="@{/voter/register}" th:object="${voter}" method="post">
         <label>National ID:</label>
-        <input type="text" th:field="*{username}" placeholder="Enter National ID" required>
+        <input type="text" th:field="*{nationalId}" placeholder="Enter National ID" required>
 
         <label>Name:</label>
         <input type="text" th:field="*{name}" placeholder="Enter Full Name" required>
@@ -87,11 +89,15 @@
         <label>Email:</label>
         <input type="email" th:field="*{email}" placeholder="Enter Email" required>
 
+        <label>Mobile:</label>
+        <input type="tel" th:field="*{mobile}" placeholder="Enter Mobile Number" required>
+
         <label>Password:</label>
         <input type="password" th:field="*{password}" placeholder="Enter Password" required>
 
         <button type="submit">Register</button>
     </form>
+
 </div>
 
 </body>

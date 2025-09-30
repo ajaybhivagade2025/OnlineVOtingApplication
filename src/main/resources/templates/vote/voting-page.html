@@ -1,0 +1,31 @@
+<div th:if="${transactionHash}" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+     xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+     xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+     xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+     xmlns:th="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"
+     xmlns:th="http://www.w3.org/1999/xhtml">
+    <p>Your vote is recorded! Transaction Hash: <b th:text="${transactionHash}"></b></p>
+</div>
+
+<div th
+     :if="${error}">
+    <p style="color:red" th
+       :text="${error}"></p>
+</div>
+
+<div th
+     :if="${success}">
+    <p style="color:green" th :text="${success}"></p>
+</div>
+
+<h3>Candidates</h3>
+<form method="post" th :action="@{/vote/cast}">
+    <ul>
+        <li th
+            :each="candidate : ${candidates}">
+            <input type="radio" th :value="${candidate.id}" name="candidateId"/>
+            <span th :text="${candidate.name} + ' (' + candidate.party + ')'"></span>
+        </li>
+    </ul>
+    <button type="submit">Vote</button>
+</form>
