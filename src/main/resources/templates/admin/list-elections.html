@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Elections</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>All Elections</h1>
+
+<!-- Flash Messages -->
+<div th:if="${success}" style="color:green;">
+    <p th:text="${success}"></p>
+</div>
+<div th:if="${error}" style="color:red;">
+    <p th:text="${error}"></p>
+</div>
+
+<table border="1" cellpadding="10">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="election : ${elections}">
+        <td th:text="${election.id}"></td>
+        <td th:text="${election.name}"></td>
+        <td th:text="${election.startTime}"></td>
+        <td th:text="${election.endTime}"></td>
+        <td th:text="${election.status}"></td>
+        <td>
+            <a th:if="${election.status == 'NOT_STARTED'}"
+               th:href="@{/admin/election/start/{id}(id=${election.id})}">Start</a>
+
+            <a th:if="${election.status == 'ONGOING'}"
+               th:href="@{/admin/election/end/{id}(id=${election.id})}">End</a>
+
+            <a th:if="${election.status == 'COMPLETED'}"
+               th:href="@{/admin/election/results/{id}(id=${election.id})}">View Results</a>
+        </td>
+    </tr>
+
+    <tr th:if="${elections.size() == 0}">
+        <td colspan="6">No elections found.</td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a th:href="@{/admin/election/create}" style="padding:6px 12px;background:#3498db;color:white;text-decoration:none;">Create New Election</a>
+<button type="button" onclick="history.back();" style="padding:6px 12px;background:#e74c3c;color:white;">Back</button>
+
+</body>
+</html>

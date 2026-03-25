@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${election != null} ? 'Election Results - ' + ${election.name} : 'Election Results'">Election Results</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #c8e6c9);
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: rgba(255,255,255,0.98);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            margin-top: 50px;
+        }
+
+        h2 {
+            color: #00796b;
+            margin-bottom: 30px;
+        }
+
+        .alert {
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        table th, table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 12px;
+        }
+
+        table th {
+            background-color: #00796b;
+            color: #fff;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #e0f2f1;
+        }
+
+        table tbody tr:nth-child(odd) {
+            background-color: #b2dfdb;
+        }
+
+        .badge-success {
+            font-size: 0.9rem;
+            padding: 6px 10px;
+        }
+
+        #voteChart {
+            max-width: 800px;
+            margin: 40px auto 0;
+        }
+
+        .btn-primary {
+            background-color: #00796b;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #004d40;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h2 class="text-center mb-4" th:text="${election != null} ? 'Election Results - ' + ${election.name} : 'Election Results'"></h2>
+
+    <!-- Blockchain verification status -->
+    <div th:if="${chainValid != null}" class="mb-3">
+        <div th:if="${chainValid}" class="alert alert-success text-center">
+            ✅ Blockchain valid. No tampering detected.
+        </div>
+        <div th:if="${!chainValid}" class="alert alert-danger text-center">
+            ❌ Blockchain invalid! Data may have been tampered.
+        </div>
+    </div>
+
+    <!-- Message if election not complete -->
+    <div th:if="${message}" class="alert alert-warning text-center">
+        <span th:text="${message}"></span>
+    </div>
+
+    <!-- Results Table -->
+    <div th:if="${results}">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Candidate Name</th>
+                <th>Total Votes</th>
+                <th th:if="${role == 'ADMIN'}">Winner</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="candidate, iter : ${results}">
+                <td th:text="${iter.index + 1}"></td>
+                <td th:text="${candidate.name}"></td>
+                <td th:text="${candidate.voteCount}"></td>
+                <td th:if="${role == 'ADMIN'}">
+                    <span class="badge bg-success" th:if="${iter.index == 0}">Winner</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Bar Chart -->
+        <div class="mt-5">
+            <canvas id="voteChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Back button -->
+    <div class="text-center mt-4">
+        <a th:href="${role == 'ADMIN' ? '/admin/dashboard' : '/voter/dashboard'}" class="btn btn-primary btn-lg">Back to Dashboard</a>
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var candidateNames = /*[[${results}]]*/ []
+        .map(c => c.name || '');
+    var voteCounts = /*[[${results}]]*/ []
+        .map(c => c.voteCount || 0);
+
+    var ctx = document.getElementById('voteChart')?.getContext('2d');
+    if(ctx && candidateNames.length > 0){
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: candidateNames,
+                datasets: [{
+                    label: 'Votes',
+                    data: voteCounts,
+                    backgroundColor: 'rgba(0,121,107,0.7)',
+                    borderColor: 'rgba(0,121,107,1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, precision: 0 }
+                }
+            }
+        });
+    }
+    /*]]>*/
+</script>
+
+</body>
+</html>

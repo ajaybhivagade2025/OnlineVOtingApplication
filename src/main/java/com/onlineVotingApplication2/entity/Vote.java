@@ -19,17 +19,22 @@ public class Vote {
 
 
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @ManyToOne(fetch = FetchType.EAGER)
-        private Voter voter;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Voter voter;
 
-        @ManyToOne(fetch = FetchType.EAGER)
-        private Candidate candidate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Candidate candidate;
 
-        private LocalDateTime timestamp;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "election_id")
+    private Election election;
+
+
+    private LocalDateTime timestamp;
+}
 
 

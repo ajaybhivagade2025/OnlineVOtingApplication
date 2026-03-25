@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${election != null} ? ${election.name} + ' Results' : 'Election Results'">Election Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #007bff, #00c6ff);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0041a3;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0041a3;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f4f9;
+        }
+
+        tr:hover {
+            background-color: #dce7ff;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${election != null} ? ${election.name} + ' Results' : 'Election Results'">Election Results</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Candidate Name</th>
+            <th>Party</th>
+            <th>Votes</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c, iter : ${candidates}">
+            <td th:text="${iter.index + 1}"></td>
+            <td th:text="${c.name}"></td>
+            <td th:text="${c.party}"></td>
+            <td th:text="${c.voteCount}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Back Button -->
+    <div style="text-align:center;">
+        <a th:href="@{/admin/elections}" class="btn">Back to Elections</a>
+    </div>
+</div>
+</body>
+</html>

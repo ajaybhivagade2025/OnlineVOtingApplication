@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>My Profile</h1>
+    <div th:if="${voter}">
+        <p><strong>Name:</strong> <span th:text="${voter.name}"></span></p>
+        <p><strong>National ID:</strong> <span th:text="${voter.nationalId}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${voter.email}"></span></p>
+        <p><strong>Mobile:</strong> <span th:text="${voter.mobile}"></span></p>
+        <p><strong>Status:</strong>
+            <span th:if="${voter.verified}" style="color: green;">Verified</span>
+            <span th:if="${not voter.verified}" style="color: orange;">Pending Verification</span>
+        </p>
+        <p><strong>Voting Status:</strong>
+            <span th:if="${voter.hasVoted}" style="color: green;">Already Voted</span>
+            <span th:if="${not voter.hasVoted}" style="color: blue;">Not Voted Yet</span>
+        </p>
+    </div>
+    <a th:href="@{/voter/dashboard}" class="btn">Back to Dashboard</a>
+</div>
+</body>
+</html>

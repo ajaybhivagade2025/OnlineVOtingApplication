@@ -1,3 +1,4 @@
+/*
 package com.onlineVotingApplication2.controller;
 
 import com.onlineVotingApplication2.repository.CandidateRepository;
@@ -39,3 +40,4 @@ public class VotingController {
     }
 
 
+*/

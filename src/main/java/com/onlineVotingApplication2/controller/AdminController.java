@@ -1,144 +1,237 @@
-
 package com.onlineVotingApplication2.controller;
 
-import com.onlineVotingApplication2.entity.Candidate;
-import com.onlineVotingApplication2.entity.User;
-import com.onlineVotingApplication2.repository.CandidateRepository;
-import com.onlineVotingApplication2.repository.UserRepository;
+import com.onlineVotingApplication2.entity.*;
+import com.onlineVotingApplication2.repository.VoterRepository;
+import com.onlineVotingApplication2.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
-@RequestMapping("/admin")  // ✅ base path for all admin routes
+@RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private CandidateRepository candidateRepository; // ✅ now injected
+    private VoterService voterService;
 
-    // Show login page
+    @Autowired
+    private CandidateService candidateService;
+
+    @Autowired
+    private VoteService voteService;
+
+    @Autowired
+    private VoterRepository voterRepository;
+
+    @Autowired
+    private BlockchainService blockchainService;
+
+    @Autowired
+    private ElectionService electionService;
+
     @GetMapping("/login")
     public String showLoginPage() {
-        return "admin/login"; // ✅ templates/admin/login.html
+        return "admin/login";
     }
 
-    // Handle login form
     @PostMapping("/login")
     public String processLogin(@RequestParam String username,
                                @RequestParam String password,
                                HttpSession session,
                                Model model) {
 
-        User admin = userRepository.findByUsername(username).orElse(null);
+        Optional<User> adminOpt = userService.getUserByUsername(username);
 
-        if (admin != null &&
-                "ADMIN".equals(admin.getRole()) &&
-                admin.getPassword().equals(password)) {
-
-            session.setAttribute("adminUser", admin);
-            return "redirect:/admin/dashboard"; // ✅ correct redirect
+        if (adminOpt.isPresent()) {
+            User admin = adminOpt.get();
+            if ("ADMIN".equals(admin.getRole()) && admin.getPassword().equals(password)) {
+                session.setAttribute("adminUser", admin);
+                return "redirect:/admin/dashboard";
+            }
         }
 
         model.addAttribute("error", "Invalid username or password");
-        return "admin/login"; // ✅ stay on login page
+        return "admin/login";
     }
-
-    // Dashboard page
-    @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
-        if (session.getAttribute("adminUser") == null) {
-            return "redirect:/admin/login";
-        }
-
-        // Example placeholders, replace with service layer calls
-        model.addAttribute("candidates", java.util.Collections.emptyList());
-        model.addAttribute("voters", java.util.Collections.emptyList());
-        model.addAttribute("votesCast", 0);
-        model.addAttribute("blocks", java.util.Collections.emptyList());
-
-        return "admin/dashboard"; // ✅ templates/admin/dashboard.html
-    }
-
-    // Logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/admin/login";
     }
 
-    // Show Add Candidate Form
-  /*  @GetMapping("/add-candidate")
-    public String showAddCandidateForm(Model model, HttpSession session) {
-        if (session.getAttribute("adminUser") == null) {
-            return "redirect:/admin/login";
-        }
+
+    @GetMapping("/dashboard")
+    public String adminDashboard(Model model) {
+
+        // Stats
+        model.addAttribute("totalCandidates", candidateService.count());
+        model.addAttribute("totalVoters", voterService.count());
+        model.addAttribute("totalVotes", voteService.count());
+        model.addAttribute("pendingVerifications", voterService.countPending());
+
+        // ✅ Sirf ONGOING election fetch karo
+        List<Election> ongoingElections = electionService.getOngoingElections();
+        model.addAttribute("ongoingElections", ongoingElections);
+
+        return "admin/dashboard";
+    }
+
+    @GetMapping("/candidates")
+    public String showCandidatesPage(Model model) {
+        // New Candidate object for Add Form
         model.addAttribute("candidate", new Candidate());
-        return "admin/add-candidate"; // ✅ must include "admin/"
+
+        // Fetch all existing candidates
+        List<Candidate> candidates = candidateService.getAllCandidates();
+        model.addAttribute("candidates", candidates);
+
+        // All elections for dropdown if needed
+        model.addAttribute("elections", electionService.getAllElection());
+
+        return "admin/candidates"; // This should point to your candidates.html
     }
-*/
-    // Handle Candidate Save
-  /*  @PostMapping("/add-candidate")
-    public String saveCandidate(@ModelAttribute Candidate candidate,
-                                HttpSession session) {
-        if (session.getAttribute("adminUser") == null) {
-            return "redirect:/admin/login";
-        }
-        candidateRepository.save(candidate);
-        return "redirect:/admin/dashboard"; // ✅ redirect after save
-    }*/
-
-    @PostMapping("/add-candidate")
-    public String saveCandidate(@ModelAttribute Candidate candidate,Model model,
-                                HttpSession session
-//                                org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
-
-    ){
-                                if (session.getAttribute("adminUser") == null) {
-            return "redirect:/admin/login";
-        }
-
-
-        candidateRepository.save(candidate);
-                                // Reset form + success message
-//        model.addAttribute("candidate", new Candidate());
-        model.addAttribute("successMessage", "�� Candidate added successfully!");
-        return "admin/add-candidate"; // reload same page with message
-
-
-        // ✅ Add success message
-//        redirectAttributes.addFlashAttribute("successMessage", "Candidate saved successfully!");
-
-//        return "redirect:/admin/dashboard";
-    }
-
-    ///   ///////////
 
 
     @GetMapping("/add-candidate")
     public String showAddCandidateForm(Model model) {
-        model.addAttribute("candidate", new Candidate()); // empty form
-        return "admin/add-candidate"; // matches templates/admin/add-candidate.html
-    }
-
-    // ✅ Handle Candidate Save
-    /*@PostMapping("/add-candidate")
-    public String saveCandidate(Candidate candidate, Model model) {
-        candidateRepository.save(candidate);
-
-        // Reset form + success message
         model.addAttribute("candidate", new Candidate());
-        model.addAttribute("successMessage", "✅ Candidate added successfully!");
-
-        return "admin/add-candidate"; // reload same page with message
+        model.addAttribute("elections", electionService.getAllElection()); // ✅ Drop-down ke liye
+        return "admin/add-candidate";  // 👈 Ye template load karega
     }
-*/
+    @PostMapping("/add-candidate")
+    public String addCandidate(@ModelAttribute Candidate candidate, RedirectAttributes ra){
+        candidateService.saveCandidate(candidate);
+        ra.addFlashAttribute("successMessage", "Candidate added successfully!");
+        return "redirect:/admin/candidates";   // ✅ Save ke baad list page pe redirect
+    }
+
+
+    @GetMapping("/verify-voters")
+    public String showUnverifiedVoters(Model model, HttpSession session) {
+        if (session.getAttribute("adminUser") == null) {
+            return "redirect:/admin/login";
+        }
+
+        List<Voter> pendingVoters = voterService.getUnverifiedVoters();
+        model.addAttribute("pendingVoters", pendingVoters);
+        return "admin/verify-voters";
+    }
+
+    @PostMapping("/verify-voters/{id}/approve")
+    public String approveVoter(@PathVariable Long id, RedirectAttributes redirectAttributes,HttpSession session) {
+        // check that admin is logged in
+        if (session.getAttribute("adminUser") == null) {
+            return "redirect:/admin/login";
+        }
+        try {
+            voterService.approveVoter(id);
+            redirectAttributes.addFlashAttribute("success", "Voter approved successfully.");
+        } catch (Exception e) {
+            // log error
+            redirectAttributes.addFlashAttribute("error", "Error approving voter: " + e.getMessage());
+        }
+        return "redirect:/admin/verify-voters";
+    }
+
+
+
+    @PostMapping("/verify-voters/{id}/reject")
+    public String rejectVoter(@PathVariable Long id, HttpSession session) {
+        if (session.getAttribute("adminUser") == null) {
+            return "redirect:/admin/login";
+        }
+
+        voterService.deleteVoter(id);
+        return "redirect:/admin/verify-voters";
+    }
+
+
+   /* @GetMapping("/result")
+    public String showResults(Model model) {
+        List<Candidate> candidates = candidateService.getAllCandidatesWithVoteCount();
+        model.addAttribute("candidates", candidates);
+        return "admin/result";
+    }*/
+
+    @GetMapping("/result")
+    public String showResults(Model model) {
+        Election election = electionService.getLatestElection();
+
+        if (election == null || election.getStatus() != Election.Status.COMPLETED) {
+            model.addAttribute("message", "Results will be available after voting ends.");
+            return "admin/result";
+        }
+
+        List<Candidate> results = candidateService
+                .findByElectionOrderByVoteCountDesc(election.getId());
+
+        boolean chainValid = blockchainService.verifyChain();
+
+        model.addAttribute("results", results);
+        model.addAttribute("chainValid", chainValid);
+        model.addAttribute("election", election);
+        return "admin/result";
+    }
+
+
+    @PostMapping("/admin/candidates/update")
+    public String updateCandidate(@ModelAttribute Candidate candidate) {
+        candidateService.updateCandidate(candidate);
+        return "redirect:/admin/candidates";
+    }
+
+
+    @PostMapping("/candidates/delete/{id}")
+    public String deleteCandidate(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        candidateService.deleteCandidate(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Candidate deleted successfully!");
+        return "redirect:/admin/candidates";
+    }
+
+
+
+
+    @GetMapping("/verify-chain")
+    public String verifyChain(Model model) {
+        boolean valid = blockchainService.verifyChain();
+        List<Block> blocks = blockchainService.getAllBlocks();
+
+        model.addAttribute("blocks", blocks);
+        model.addAttribute("valid", valid);
+        return "admin/verify-chain";
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 }
+
+
+

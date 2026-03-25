@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Voter Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+        .container {
+            width: 95%;
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #ffffffcc;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
+        }
+        .welcome { font-size: 2em; color: #007bff; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; color: white; background: #007bff; text-decoration: none; cursor: pointer; margin: 0 5px; transition: 0.3s; }
+        .btn:hover { background: #0056b3; }
+        .btn-secondary { background: #6c757d; }
+        .btn-secondary:hover { background: #545b62; }
+
+        .status {
+            padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em; display: inline-block;
+        }
+        .status.verified { background: #d4edda; color: #155724; }
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.voted { background: #d1ecf1; color: #0c5460; }
+        .status.not-voted { background: #f8d7da; color: #721c24; }
+
+        table {
+            width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        table th, table td { padding: 12px 10px; text-align: center; }
+        table th { background: #007bff; color: white; }
+        tbody tr:nth-child(even) { background: #e3f2fd; }
+        tbody tr:nth-child(odd) { background: #bbdefb; }
+        tbody tr:hover { background: #90caf9; }
+
+        .instructions {
+            margin-top: 25px;
+            padding: 20px;
+            background: #e7f3ff;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        .instructions ul { padding-left: 20px; }
+        .instructions li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h1 class="welcome">Welcome, <span th:text="${voter != null ? voter.name : 'Voter'}">Voter</span>!</h1>
+        <div>
+            <a th:href="@{/voter/profile}" class="btn">My Profile</a>
+            <a th:href="@{/voter/logout}" class="btn btn-secondary">Logout</a>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <div th:if="${success}" class="btn" style="background:#d4edda;color:#155724;margin-bottom:15px;text-align:center;" th:text="${success}"></div>
+    <div th:if="${error}" class="btn" style="background:#f8d7da;color:#721c24;margin-bottom:15px;text-align:center;" th:text="${error}"></div>
+
+    <!-- Voter Status -->
+    <div>
+        <p>
+            Account Status:
+            <span th:if="${voter != null and voter.verified}" class="status verified">✓ Verified</span>
+            <span th:if="${voter == null or not voter.verified}" class="status pending">⏳ Pending</span>
+        </p>
+        <p>
+            Voting Status:
+            <span th:if="${voter != null and voter.hasVoted}" class="status voted">✓ Voted</span>
+            <span th:if="${voter == null or not voter.hasVoted}" class="status not-voted">Not Voted</span>
+        </p>
+        <p>National ID: <strong th:text="${voter != null ? voter.nationalId : 'N/A'}">N/A</strong></p>
+    </div>
+
+    <!-- Ongoing Elections Table -->
+    <h2>Ongoing Elections</h2>
+    <table th:if="${ongoingElections != null and !ongoingElections.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Election Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="election : ${ongoingElections}">
+            <td th:text="${election.name}">Election Name</td>
+            <td th:text="${election.startTime != null ? #temporals.format(election.startTime,'dd-MM-yyyy HH:mm') : 'N/A'}">Start Date</td>
+            <td th:text="${election.endTime != null ? #temporals.format(election.endTime,'dd-MM-yyyy HH:mm') : 'N/A'}">End Date</td>
+
+            <td>
+                <a th:if="${voter != null and voter.verified and not voter.hasVoted}"
+                   th:href="@{/voter/election/{id}/candidates(id=${election.id})}"
+                   class="btn">Vote Now</a>
+                <button th:if="${voter == null or not voter.verified or voter.hasVoted}" class="btn btn-secondary" disabled>Vote Now</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/voter/voter-result}" class="btn btn-primary" style="margin-top:20px;">View Results</a>
+    <p th:if="${ongoingElections == null or ongoingElections.isEmpty()}" style="text-align:center; font-weight:bold; margin-top:15px;">No ongoing elections at the moment.</p>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        <h3>Important Instructions</h3>
+        <ul>
+            <li>Ensure your account is verified before voting</li>
+            <li>You can only vote once per election</li>
+            <li>Contact admin if you face any issues</li>
+            <li>Results will be available after the election ends</li>
+        </ul>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cast Your Vote</title>
+</head>
+<body>
+<h2>Vote for Your Candidate</h2>
+
+<div th:if="${error}" style="color:red" th:text="${error}"></div>
+<div th:if="${success}" style="color:green" th:text="${success}"></div>
+
+<table border="1">
+    <tr>
+        <th>Name</th><th>Party</th><th>Action</th>
+    </tr>
+    <tr th:each="c : ${candidates}">
+        <td th:text="${c.name}"></td>
+        <td th:text="${c.party}"></td>
+        <td>
+            <form th:action="@{'/vote/' + ${c.id}}" method="post">
+                <button type="submit">Vote</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<a th:href="@{/voter/dashboard}">Back to Dashboard</a>
+</body>
+</html>
