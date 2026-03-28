@@ -212,15 +212,15 @@ public class VoterController {
         // 2️⃣ Latest election
         Election election = electionService.getLatestElection();
         if (election == null) {
-            model.addAttribute("message", "No elections available at the moment.");
-            return "voter/voter-result";
+            model.addAttribute("message1", "No elections available at the moment.");
+            return "voter/no-results";
         }
 
         // 3️⃣ Check if election ended (admin has completed it)
         if (election.getStatus() != Election.Status.COMPLETED) {
-            model.addAttribute("message", "Results will be available after voting ends by the admin.");
+            model.addAttribute("message2", "Results will be available after voting ends by the admin.");
             model.addAttribute("election", election);
-            return "voter/voter-result";
+            return "voter/no-results";
         }
 
         // 4️⃣ Optional: restrict if voter hasn't voted
