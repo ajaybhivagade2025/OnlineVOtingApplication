@@ -219,6 +219,7 @@ public class VoterController {
         // 3️⃣ Check if election ended (admin has completed it)
         if (election.getStatus() != Election.Status.COMPLETED) {
             model.addAttribute("message", "Results will be available after voting ends by the admin.");
+            model.addAttribute("election", election);
             return "voter/voter-result";
         }
 
@@ -226,6 +227,7 @@ public class VoterController {
         boolean restrictIfNotVoted = false; // change true to require vote
         if (restrictIfNotVoted && (voter == null || !voter.isHasVoted())) {
             model.addAttribute("message", "You must vote to view the results.");
+
             return "voter/voter-result";
         }
 
@@ -239,6 +241,7 @@ public class VoterController {
         boolean chainValid = blockchainService.verifyChain();
 
         // 7️⃣ Add attributes to model
+        model.addAttribute("election",election.getName());
         model.addAttribute("results", results);
         model.addAttribute("election", election);
         model.addAttribute("chainValid", chainValid);
