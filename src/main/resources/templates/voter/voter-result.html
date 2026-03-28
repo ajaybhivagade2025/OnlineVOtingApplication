@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${election != null} ? 'Election Results - ' + election.name : 'Election Results'"></title>
 
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -87,8 +86,9 @@
 
 <div class="container">
 
-    <h2 class="text-center"
-        th:text="${election != null} ? 'Election Results - ' + election.name : 'Election Results'">
+    <h2 class="text-center">
+        Election Results -
+        <span th:text="${election.name}"></span>
     </h2>
 
     <!-- MESSAGE -->
