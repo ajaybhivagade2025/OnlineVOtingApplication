@@ -16,8 +16,9 @@
 <body>
 <div class="box">
     <h1>⏳ Results Not Available</h1>
-    <p th:text="${message}">Results will be available after voting ends.</p>
-    <a th:href="@{/}">Back to Home</a>
+    <p th:text="${message1}">No elections available at the moment</p>
+    <p th:text="${message2}">Results will be available after voting ends by the admin</p>
+    <a th:href="@{/voter/dashboard}">Back to Home</a>
 </div>
 </body>
 </html>
