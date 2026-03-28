@@ -232,7 +232,7 @@ public class VoterController {
         // 5️⃣ Fetch candidate results & convert to DTO
         List<CandidateResultDTO> results = candidateService.findByElectionOrderByVoteCountDesc(election.getId())
                 .stream()
-                .map(c -> new CandidateResultDTO(c.getName(), c.getVoteCount(),c.getParty()))
+                .map(c -> new CandidateResultDTO(c.getName(), c.getVoteCount(),c.getParty(),c.getLogo()))
                 .collect(Collectors.toList());
 
         // 6️⃣ Verify blockchain

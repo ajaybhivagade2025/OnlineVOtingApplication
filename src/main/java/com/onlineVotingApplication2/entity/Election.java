@@ -14,12 +14,13 @@ public class Election {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;                  // Election ka naam (e.g. "Student Council 2025")
-    private LocalDateTime startTime;      // Start date/time
-    private LocalDateTime endTime;        // End date/time
+    private String name;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     @Enumerated(EnumType.STRING)
-    private Status status;                // NOT_STARTED, ONGOING, COMPLETED
+    private Status status;
+
 
     public enum Status {
         NOT_STARTED,

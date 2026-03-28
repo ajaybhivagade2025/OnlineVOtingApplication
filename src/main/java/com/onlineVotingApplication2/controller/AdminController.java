@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,12 +109,36 @@ public class AdminController {
         model.addAttribute("elections", electionService.getAllElection()); // ✅ Drop-down ke liye
         return "admin/add-candidate";  // 👈 Ye template load karega
     }
-    @PostMapping("/add-candidate")
-    public String addCandidate(@ModelAttribute Candidate candidate, RedirectAttributes ra){
-        candidateService.saveCandidate(candidate);
-        ra.addFlashAttribute("successMessage", "Candidate added successfully!");
-        return "redirect:/admin/candidates";   // ✅ Save ke baad list page pe redirect
-    }
+  @PostMapping("/add-candidate")
+  public String addCandidate(@ModelAttribute Candidate candidate,
+                             @RequestParam("logoFile") MultipartFile file,
+                             RedirectAttributes ra) {
+
+      try {
+          if (!file.isEmpty()) {
+
+              String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+              String uploadDir = "C:/Users/HP/OneDrive/Desktop/AI/uploads/";
+
+              File uploadPath = new File(uploadDir);
+              if (!uploadPath.exists()) {
+                  uploadPath.mkdirs();
+              }
+              File saveFile = new File(uploadDir + fileName);
+              file.transferTo(saveFile);
+              candidate.setLogo(fileName);
+          }
+
+          candidateService.saveCandidate(candidate);
+          ra.addFlashAttribute("successMessage", "Candidate added successfully!");
+
+      } catch (Exception e) {
+          e.printStackTrace();
+          ra.addFlashAttribute("errorMessage", "Error uploading logo");
+      }
+
+      return "redirect:/admin/candidates";
+  }
 
 
     @GetMapping("/verify-voters")
@@ -153,14 +179,6 @@ public class AdminController {
         voterService.deleteVoter(id);
         return "redirect:/admin/verify-voters";
     }
-
-
-   /* @GetMapping("/result")
-    public String showResults(Model model) {
-        List<Candidate> candidates = candidateService.getAllCandidatesWithVoteCount();
-        model.addAttribute("candidates", candidates);
-        return "admin/result";
-    }*/
 
     @GetMapping("/result")
     public String showResults(Model model) {

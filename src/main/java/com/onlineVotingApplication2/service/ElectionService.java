@@ -44,5 +44,8 @@ public class ElectionService {
     }
 
 
+    public void deleteElection(Long id) {
+        electionRepository.deleteById(id);
+    }
 }
 

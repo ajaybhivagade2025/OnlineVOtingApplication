@@ -25,6 +25,7 @@
         <th>End Time</th>
         <th>Status</th>
         <th>Actions</th>
+        <th>Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -43,6 +44,13 @@
 
             <a th:if="${election.status == 'COMPLETED'}"
                th:href="@{/admin/election/results/{id}(id=${election.id})}">View Results</a>
+        <td>
+            <a th:href="@{/admin/election/delete/{id}(id=${election.id})}"
+               style="color:red;"
+               onclick="return confirm('Are you sure you want to delete this election?')">
+                ❌ Delete
+            </a>
+
         </td>
     </tr>
 
@@ -54,7 +62,7 @@
 
 <br>
 <a th:href="@{/admin/election/create}" style="padding:6px 12px;background:#3498db;color:white;text-decoration:none;">Create New Election</a>
-<button type="button" onclick="history.back();" style="padding:6px 12px;background:#e74c3c;color:white;">Back</button>
+<a th:href="@{/admin/dashboard}" style="padding:6px 12px;background:#3498db;color:white;text-decoration:none;">Dashboard</a>
 
 </body>
 </html>

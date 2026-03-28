@@ -138,5 +138,28 @@ public class ElectionController {
         return "redirect:/admin/elections";
     }
 
+    @GetMapping("/admin/election/delete/{id}")
+    public String deleteElection(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        Election election = electionService.getElectionById(id).orElse(null);
+
+        if (election == null) {
+            redirectAttributes.addFlashAttribute("error", "Election not found");
+            return "redirect:/admin/elections";
+        }
+
+        // ❌ Optional safety: ONGOING election delete na ho
+        if (election.getStatus() == Election.Status.ONGOING) {
+            redirectAttributes.addFlashAttribute("error", "Cannot delete ongoing election");
+            return "redirect:/admin/elections";
+        }
+
+        electionService.deleteElection(id);
+
+        redirectAttributes.addFlashAttribute("success", "Election deleted successfully");
+        return "redirect:/admin/elections";
+    }
+
+
 
 }

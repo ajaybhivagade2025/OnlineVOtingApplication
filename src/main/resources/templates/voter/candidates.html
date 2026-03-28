@@ -112,6 +112,7 @@
         <tr>
             <th>Name</th>
             <th>Party</th>
+            <th>Logo</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -119,6 +120,13 @@
         <tr th:each="candidate : ${candidates}">
             <td th:text="${candidate.name}">Candidate Name</td>
             <td th:text="${candidate.party}">Party</td>
+
+            <td>
+                <img th:if="${candidate.logo != null}"
+                     th:src="@{'/uploads/' + ${candidate.logo}}"
+                     width="60" height="60">
+            </td>
+
             <td>
                 <form th:if="${voter.verified and not voter.hasVoted}"
                       th:action="@{/voter/election/{electionId}/vote/{candidateId}(electionId=${electionId}, candidateId=${candidate.id})}" method="post">
