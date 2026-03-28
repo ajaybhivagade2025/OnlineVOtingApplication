@@ -166,6 +166,7 @@
             <th>ID</th>
             <th>Name</th>
             <th>Party</th>
+            <th>Logo</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -174,6 +175,12 @@
             <td th:text="${cand.id}">1</td>
             <td th:text="${cand.name}">Name</td>
             <td th:text="${cand.party}">Party</td>
+            <td>
+                <img th:if="${cand.logo != null}"
+                     th:src="@{'/uploads/' + ${cand.logo}}"
+                     width="60" height="60"
+                     style="border-radius:8px;">
+            </td>
             <td>
                 <form th:action="@{/admin/candidates/delete/{id}(id=${cand.id})}" method="post" style="display:inline-block">
                     <button type="submit" class="btn btn-sm btn-danger"

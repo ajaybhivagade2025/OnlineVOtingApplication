@@ -8,12 +8,18 @@ public class CandidateResultDTO {
     private String name;
     private int voteCount;
     private String party;
+    private String logo;
 
 
-    public CandidateResultDTO(String name, int voteCount,String party) {
+    public CandidateResultDTO(String name, int voteCount,String party,String logo) {
         this.name = name;
         this.voteCount = voteCount;
         this.party=party;
+        this.logo=logo;
+    }
+
+    public String getLogo() {
+        return logo;
     }
 
     public String getName() {

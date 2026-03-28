@@ -28,6 +28,9 @@ public class Candidate {
 
         private int voteCount = 0;
 
+        private String logo;
+
+
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes;
 

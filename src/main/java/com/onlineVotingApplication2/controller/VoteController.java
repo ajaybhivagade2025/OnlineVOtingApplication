@@ -70,6 +70,7 @@ public class VoteController {
     @GetMapping("/results")
     public String showResults(Model model) {
         Election election = electionService.getLatestElection();
+
         if (election == null || election.getStatus() != Election.Status.COMPLETED) {
             model.addAttribute("message", "Results will be available after voting ends.");
             return "vote/no-results";  // ek simple HTML page banalo

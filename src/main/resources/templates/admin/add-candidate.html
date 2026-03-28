@@ -114,8 +114,13 @@
     <div th:if="${successMessage}" class="message" th:text="${successMessage}"></div>
 
     <!-- Candidate Form -->
-    <form th:action="@{/admin/add-candidate}" th:object="${candidate}" method="post">
-        <label for="name">Candidate Name</label>
+<!--    <form th:action="@{/admin/add-candidate}" th:object="${candidate}" method="post">-->
+<!--    <form th:action="@{/admin/add-candidate}" method="post" enctype="multipart/form-data">-->
+    <form th:action="@{/admin/add-candidate}"
+          th:object="${candidate}"
+          method="post"
+          enctype="multipart/form-data">
+    <label for="name">Candidate Name</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Enter candidate name" required />
 
         <label for="party">Party Name</label>
@@ -126,6 +131,10 @@
             <option value="" disabled selected>Select Election</option>
             <option th:each="election : ${elections}" th:value="${election.id}" th:text="${election.name}"></option>
         </select>
+
+        <label>Candidate Logo:</label>
+        <input type="file" name="logoFile" accept="image/*" required>
+        <img th:src="@{'/uploads/' + ${candidate.logo}}" width="60" height="60">
 
         <div style="text-align:center; margin-top: 20px;">
             <button type="submit" class="btn btn-primary">Add Candidate</button>
