@@ -8,6 +8,7 @@ class OnlineVOtingApplicationTests {
 
 	@Test
 	void contextLoads() {
+        System.out.println("hello word");
 	}
 
 }

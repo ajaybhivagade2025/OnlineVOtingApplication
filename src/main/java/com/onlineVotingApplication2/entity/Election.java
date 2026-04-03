@@ -3,11 +3,15 @@ package com.onlineVotingApplication2.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "elections")
+@Getter
+@Setter
 public class Election {
 
     @Id

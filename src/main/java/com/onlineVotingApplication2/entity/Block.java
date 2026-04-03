@@ -1,10 +1,7 @@
 package com.onlineVotingApplication2.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.time.LocalDateTime;
@@ -16,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Block {
 
         @Id
