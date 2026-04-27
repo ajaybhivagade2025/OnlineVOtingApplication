@@ -40,6 +40,7 @@ public class AdminController {
     @Autowired
     private ElectionService electionService;
 
+    // admin login
     @GetMapping("/login")
     public String showLoginPage() {
         return "admin/login";
@@ -64,6 +65,8 @@ public class AdminController {
         model.addAttribute("error", "Invalid username or password");
         return "admin/login";
     }
+
+    // admin logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
@@ -71,38 +74,30 @@ public class AdminController {
     }
 
 
+    // admin dashboard
     @GetMapping("/dashboard")
     public String adminDashboard(Model model) {
-
-        // Stats
         model.addAttribute("totalCandidates", candidateService.count());
         model.addAttribute("totalVoters", voterService.count());
         model.addAttribute("totalVotes", voteService.count());
         model.addAttribute("pendingVerifications", voterService.countPending());
-
-        // ✅ Sirf ONGOING election fetch karo
         List<Election> ongoingElections = electionService.getOngoingElections();
         model.addAttribute("ongoingElections", ongoingElections);
-
         return "admin/dashboard";
     }
 
+    // admin candidates
     @GetMapping("/candidates")
     public String showCandidatesPage(Model model) {
-        // New Candidate object for Add Form
         model.addAttribute("candidate", new Candidate());
-
-        // Fetch all existing candidates
         List<Candidate> candidates = candidateService.getAllCandidates();
         model.addAttribute("candidates", candidates);
-
-        // All elections for dropdown if needed
         model.addAttribute("elections", electionService.getAllElection());
-
         return "admin/candidates"; // This should point to your candidates.html
     }
 
 
+    // admin add candidate
     @GetMapping("/add-candidate")
     public String showAddCandidateForm(Model model) {
         model.addAttribute("candidate", new Candidate());

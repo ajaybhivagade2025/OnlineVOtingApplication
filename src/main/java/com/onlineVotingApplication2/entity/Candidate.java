@@ -25,11 +25,8 @@ public class Candidate {
 
     @NotBlank(message = "name is required")
         private String name;
-
         private String party;
-
         private int voteCount = 0;
-
         private String logo;
 
 

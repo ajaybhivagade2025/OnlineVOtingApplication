@@ -24,23 +24,16 @@ public class Voter {
        @NotBlank(message = "National ID is required")
        @Size(min = 8, max = 20)
        private String nationalId;
-
         @NotBlank(message = "Name is required")
         private String name;
-
         @Email(message = "Invalid email")
         private String email;
-
         @NotBlank(message = "mobile is required")
         private String mobile;
-
         @NotBlank(message = "Password is required")
         private String password;
-
-
         private boolean verified = false;
         private boolean hasVoted = false;
-
         private Long votedCandidateId;
 
     }
