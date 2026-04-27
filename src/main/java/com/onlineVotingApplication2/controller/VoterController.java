@@ -246,7 +246,7 @@ public class VoterController {
         model.addAttribute("election", election);
         model.addAttribute("chainValid", chainValid);
 
-        return "voter/voter-result"; // NO leading slash
+        return "voter/voter-result";
     }
 
 

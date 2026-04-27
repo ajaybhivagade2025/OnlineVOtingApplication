@@ -45,7 +45,7 @@ public class ElectionController {
         return "admin/create-election";
     }
 
-    // For LocalDateTime binding from datetime-local input
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
@@ -148,7 +148,7 @@ public class ElectionController {
             return "redirect:/admin/elections";
         }
 
-        // ❌ Optional safety: ONGOING election delete na ho
+        //Optional safety: ONGOING election delete na ho ye check kare
         if (election.getStatus() == Election.Status.ONGOING) {
             redirectAttributes.addFlashAttribute("error", "Cannot delete ongoing election");
             return "redirect:/admin/elections";

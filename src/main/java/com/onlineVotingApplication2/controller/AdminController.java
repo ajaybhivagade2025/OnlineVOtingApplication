@@ -216,15 +216,20 @@ public class AdminController {
     }
 
 
-
-
     @GetMapping("/verify-chain")
     public String verifyChain(Model model) {
+
         boolean valid = blockchainService.verifyChain();
         List<Block> blocks = blockchainService.getAllBlocks();
 
         model.addAttribute("blocks", blocks);
         model.addAttribute("valid", valid);
+
+        // ✅ ADD THIS
+        if (!valid) {
+            model.addAttribute("errorMessage", "⚠ Blockchain Tampered! Data is not trustworthy.");
+        }
+
         return "admin/verify-chain";
     }
 

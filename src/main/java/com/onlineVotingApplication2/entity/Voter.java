@@ -1,5 +1,6 @@
 package com.onlineVotingApplication2.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,22 +14,24 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Voter {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-       @Column(unique = true)
+
+        @Column(unique = true)
        @NotBlank(message = "National ID is required")
        @Size(min = 8, max = 20)
        private String nationalId;
 
-    @NotBlank(message = "Name is required")
+        @NotBlank(message = "Name is required")
         private String name;
 
-    @Email(message = "Invalid email")
+        @Email(message = "Invalid email")
         private String email;
 
-    @NotBlank(message = "mobile is required")
+        @NotBlank(message = "mobile is required")
         private String mobile;
 
         @NotBlank(message = "Password is required")
@@ -38,7 +41,7 @@ public class Voter {
         private boolean verified = false;
         private boolean hasVoted = false;
 
-      private Long votedCandidateId;
+        private Long votedCandidateId;
 
     }
 

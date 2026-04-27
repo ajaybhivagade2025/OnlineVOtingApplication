@@ -26,27 +26,7 @@ public class Block {
         @Column(length = 2000)
         private String data;
         private LocalDateTime timestamp;
-
-
-    private Long electionId;
-
-
-    public void generateHash() {
-        this.currentHash = calculateHash();
-    }
-
-   /* public String calculateHash() {
-        String input = previousHash + timestamp + data;
-        return DigestUtils.sha256Hex(input);
-    }*/
-
-    public String calculateHash() {
-        // FIXED FORMAT for timestamp to avoid DB formatting issues
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String timeString = timestamp.format(fmt);
-        String input = previousHash + timeString + data;
-        return DigestUtils.sha256Hex(input);
-    }
+        private Long electionId;
 
 }
 

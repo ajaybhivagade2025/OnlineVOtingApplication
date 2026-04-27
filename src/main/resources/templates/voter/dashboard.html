@@ -23,7 +23,18 @@
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
         }
         .welcome { font-size: 2em; color: #007bff; }
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; color: white; background: #007bff; text-decoration: none; cursor: pointer; margin: 0 5px; transition: 0.3s; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            background: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: 0.3s;
+            display: inline-block;
+        }
         .btn:hover { background: #0056b3; }
         .btn-secondary { background: #6c757d; }
         .btn-secondary:hover { background: #545b62; }
@@ -37,13 +48,24 @@
         .status.not-voted { background: #f8d7da; color: #721c24; }
 
         table {
-            width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         table th, table td { padding: 12px 10px; text-align: center; }
         table th { background: #007bff; color: white; }
         tbody tr:nth-child(even) { background: #e3f2fd; }
         tbody tr:nth-child(odd) { background: #bbdefb; }
         tbody tr:hover { background: #90caf9; }
+
+        /* ✅ NEW FIX */
+        .result-btn-wrapper {
+            text-align: center;
+            margin-top: 30px;
+        }
 
         .instructions {
             margin-top: 25px;
@@ -89,6 +111,7 @@
 
     <!-- Ongoing Elections Table -->
     <h2>Ongoing Elections</h2>
+
     <table th:if="${ongoingElections != null and !ongoingElections.isEmpty()}">
         <thead>
         <tr>
@@ -114,8 +137,15 @@
         </tbody>
     </table>
 
-    <a th:href="@{/voter/voter-result}" class="btn btn-primary" style="margin-top:20px;">View Results</a>
-    <p th:if="${ongoingElections == null or ongoingElections.isEmpty()}" style="text-align:center; font-weight:bold; margin-top:15px;">No ongoing elections at the moment.</p>
+    <!-- ✅ FIXED POSITION -->
+    <div class="result-btn-wrapper">
+        <a th:href="@{/voter/voter-result}" class="btn">View Results</a>
+    </div>
+
+    <p th:if="${ongoingElections == null or ongoingElections.isEmpty()}"
+       style="text-align:center; font-weight:bold; margin-top:15px;">
+        No ongoing elections at the moment.
+    </p>
 
     <!-- Instructions -->
     <div class="instructions">
