@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Blockchain Verification</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -22,7 +24,7 @@
         h1 {
             text-align: center;
             color: #1976d2;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .alert-valid {
@@ -33,7 +35,7 @@
             border-radius: 8px;
             font-weight: 600;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .alert-invalid {
@@ -44,11 +46,16 @@
             border-radius: 8px;
             font-weight: 600;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+
+        .table-container {
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
+            min-width: 900px;
             border-collapse: collapse;
             margin-top: 20px;
             border-radius: 10px;
@@ -59,6 +66,7 @@
         th, td {
             padding: 12px;
             text-align: center;
+            vertical-align: middle;
         }
 
         th {
@@ -74,9 +82,30 @@
             background-color: #bbdefb;
         }
 
+        .hash-cell {
+            max-width: 180px;
+            word-break: break-all;
+            font-size: 0.8rem;
+        }
+
+        .data-cell {
+            max-width: 220px;
+            word-break: break-word;
+        }
+
+        .time-cell {
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
         a.btn-back {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 30px;
             padding: 10px 20px;
             background-color: #1976d2;
             color: white;
@@ -90,42 +119,78 @@
         }
     </style>
 </head>
+
 <body>
 <div class="container">
 
     <h1>Blockchain Verification</h1>
 
+    <!-- 🔥 STATUS BADGE -->
+    <div class="status-badge">
+        <span th:if="${valid}" class="badge bg-success">VALID</span>
+        <span th:if="${!valid}" class="badge bg-danger">INVALID</span>
+    </div>
+
+    <!-- 🔥 ALERT -->
     <div th:if="${valid}" class="alert-valid">
         ✅ Blockchain is VALID. No tampering detected.
     </div>
+
     <div th:if="${!valid}" class="alert-invalid">
-        ❌ Blockchain is INVALID. Data might be tampered.
+        ❌ Blockchain is INVALID!
+        <br>
+        ⚠ Data has been tampered or chain is broken.
+        <br>
+        🚫 Results cannot be trusted.
     </div>
 
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Previous Hash</th>
-            <th>Current Hash</th>
-            <th>Data</th>
-            <th>Timestamp</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="block : ${blocks}">
-            <td th:text="${block.id}"></td>
-            <td th:text="${block.previousHash}"></td>
-            <td th:text="${block.currentHash}"></td>
-            <td th:text="${block.data}"></td>
-            <td th:text="${#temporals.format(block.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <p style="text-align:center; font-weight:bold;">
+        Total Blocks: <span th:text="${#lists.size(blocks)}"></span>
+    </p>
+    <div th:if="${tamperedBlocks != null and !tamperedBlocks.isEmpty()}"
+         style="color:red; text-align:center; font-weight:bold; margin-bottom:10px;">
+        ⚠ Tampered Blocks:
+        <span th:each="id : ${tamperedBlocks}" th:text="${id} + ' '"></span>
+    </div>
 
+    <!-- TABLE -->
+    <div class="table-container">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Previous Hash</th>
+                <th>Current Hash</th>
+                <th>Data</th>
+                <th>Timestamp</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="block : ${blocks}"
+                th:classappend="${tamperedBlocks != null and tamperedBlocks.contains(block.id)} ? 'table-danger' : ''">
+
+                <td th:text="${block.id}"></td>
+
+                <td class="hash-cell" th:text="${block.previousHash}"></td>
+
+                <td class="hash-cell" th:text="${block.currentHash}"></td>
+
+                <td class="data-cell" th:text="${block.data}"></td>
+
+                <td class="time-cell"
+                    th:text="${block.timestamp != null ? #temporals.format(block.timestamp, 'dd-MM-yyyy HH:mm:ss') : 'N/A'}">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- BACK BUTTON -->
     <div class="text-center">
         <a href="/admin/dashboard" class="btn-back">Back to Dashboard</a>
     </div>
+
 </div>
 </body>
 </html>

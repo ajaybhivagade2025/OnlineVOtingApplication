@@ -20,10 +20,7 @@ public class CandidateService {
     @Autowired
     private CandidateRepository candidateRepository;
 
-    // Temporary in-memory map to track votes per voter (can be replaced with DB check)
     private ConcurrentHashMap<Long, Long> votesMap = new ConcurrentHashMap<>();
-
-    // =================== Admin Operations ===================
 
     public List<Candidate> getAllCandidates() {
         return candidateRepository.findAll();
@@ -33,11 +30,10 @@ public class CandidateService {
         return candidateRepository.findById(id);
     }
 
-    // ✅ Admin adds a candidate (with party uniqueness check)
     public Candidate saveCandidate(Candidate candidate) {
-       /* if (candidateRepository.existsByParty(candidate.getParty())) {
-            throw new RuntimeException("Party '" + candidate.getParty() + "' already exists. Please choose a different party name.");
-        }*/
+//        if (candidateRepository.existsByParty(candidate.getParty())) {
+//            throw new RuntimeException("Party '" + candidate.getParty() + "' already exists. Please choose a different party name.");
+//        }
         return candidateRepository.save(candidate);
     }
 

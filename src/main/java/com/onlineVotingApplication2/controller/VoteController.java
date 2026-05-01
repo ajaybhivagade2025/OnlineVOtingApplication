@@ -73,7 +73,7 @@ public class VoteController {
 
         if (election == null || election.getStatus() != Election.Status.COMPLETED) {
             model.addAttribute("message", "Results will be available after voting ends.");
-            return "vote/no-results";  // ek simple HTML page banalo
+            return "vote/no-results";
         }
 
         List<Candidate> candidates = candidateRepository.findAllByOrderByVoteCountDesc();
@@ -120,12 +120,12 @@ public class VoteController {
         System.out.println("Session Voter = " + voter);
 
         if (voter == null) {
-            System.out.println("❌ No voter in session");
+            System.out.println("No voter in session");
             return "redirect:/voter/login";
         }
 
         if (voter.isHasVoted()) {
-            System.out.println("❌ Already voted");
+            System.out.println("Already voted");
             model.addAttribute("error", "You have already voted!");
             return "redirect:/voter/election/" + electionId + "/candidates";
         }
@@ -133,7 +133,7 @@ public class VoteController {
         Candidate candidate = candidateService.getCandidateById(candidateId).orElse(null);
         System.out.println("Candidate = " + candidate);
         if (candidate == null) {
-            System.out.println("❌ Candidate not found");
+            System.out.println("Candidate not found");
             return "redirect:/voter/elections";
         }
 

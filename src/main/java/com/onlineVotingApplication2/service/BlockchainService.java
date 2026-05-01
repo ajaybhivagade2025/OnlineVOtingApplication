@@ -19,7 +19,7 @@ public class BlockchainService {
         private BlockRepository blockRepo;
 
 
-    public boolean verifyChain() {
+   /* public boolean verifyChain() {
         List<Block> blocks = blockRepo.findAll();
         for (int i = 1; i < blocks.size(); i++) {
             Block current = blocks.get(i);
@@ -29,8 +29,63 @@ public class BlockchainService {
             if (!current.getPreviousHash().equals(previous.getCurrentHash())) return false;
         }
         return true;
+    }*/
+
+
+  /*  public boolean verifyChain() {
+        List<Block> blocks = blockRepo.findAll(Sort.by("id")); // ✅ FIX: sorted
+
+        if (blocks.isEmpty()) return true;
+
+        // ✅ FIX: Genesis block check
+        if (!blocks.get(0).getPreviousHash().equals("0")) return false;
+
+        for (int i = 1; i < blocks.size(); i++) {
+            Block current = blocks.get(i);
+            Block previous = blocks.get(i - 1);
+
+            // ✅ FIX: hash validation
+            if (!current.getCurrentHash().equals(calculateHash(current))) {
+                return false;
+            }
+
+            // ✅ FIX: chain link validation
+            if (!current.getPreviousHash().equals(previous.getCurrentHash())) {
+                return false;
+            }
+        }
+
+        return true;
     }
-    public boolean isElectionChainValid(Long electionId) {
+*/
+
+  public boolean verifyChain() {
+      List<Block> blocks = blockRepo.findAll(Sort.by("id"));
+
+      if (blocks.isEmpty()) return true;
+
+      // Genesis block check
+      if (!blocks.get(0).getPreviousHash().equals("0")) return false;
+
+      for (int i = 1; i < blocks.size(); i++) {
+          Block current = blocks.get(i);
+          Block previous = blocks.get(i - 1);
+
+          // Hash validation
+          if (!current.getCurrentHash().equals(calculateHash(current))) {
+              return false;
+          }
+
+          // Chain validation
+          if (!current.getPreviousHash().equals(previous.getCurrentHash())) {
+              return false;
+          }
+      }
+
+      return true;
+  }
+
+ /*   public boolean isElectionChainValid(Long electionId) {
         List<Block> chain = blockRepo.findByElectionIdOrderByIdAsc(electionId);
         for (int i = 1; i < chain.size(); i++) {
             Block current = chain.get(i);
@@ -41,11 +96,33 @@ public class BlockchainService {
         }
         return true;
     }
+*/
+ public boolean isElectionChainValid(Long electionId) {
+     List<Block> chain = blockRepo.findByElectionIdOrderByIdAsc(electionId);
 
+     if (chain.isEmpty()) return true;
+
+     if (!chain.get(0).getPreviousHash().equals("0")) return false;
+
+     for (int i = 1; i < chain.size(); i++) {
+         Block current = chain.get(i);
+         Block previous = chain.get(i - 1);
+
+         if (!current.getCurrentHash().equals(calculateHash(current))) {
+             return false;
+         }
+
+         if (!current.getPreviousHash().equals(previous.getCurrentHash())) {
+             return false;
+         }
+     }
+
+     return true;
+ }
 
 
     public List<Block> getAllBlocks() {
-        return blockRepo.findAll();
+        return blockRepo.findAll(Sort.by("id"));
     }
 
 
@@ -63,18 +140,22 @@ public class BlockchainService {
 
             String hash = calculateHash(b1);
             b1.setCurrentHash(hash);
-//            return blockRepo.save(b);
             return  blockRepo.save(b1);
 
 
         }
 
-        public String calculateHash(Block block) {
-            String input = (block.getPreviousHash() == null ? "" : block.getPreviousHash())
-                    + block.getData()
-                    + block.getTimestamp().toString();
-            return DigestUtils.sha256Hex(input);
-        }
+       public String calculateHash(Block block) {
+           String time = block.getTimestamp()
+                   .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+           String input = (block.getPreviousHash() == null ? "" : block.getPreviousHash())
+                   + block.getData()
+                   + time;
+
+           return DigestUtils.sha256Hex(input);
+       }
+
 
         public List<Block> getChain() {
             return blockRepo.findAll(Sort.by("id"));
@@ -84,30 +165,26 @@ public class BlockchainService {
             return blockRepo.findByCurrentHash(hash);
         }
 
-
     public void addVoteBlock(Long electionId, Long candidateId, Long voterId, String blockData) {
-        // Last block nikal ke uska hash previousHash me set karenge
-//        Block latestBlock = blockRepo.findTopByOrderByIdDesc();
 
         Optional<Block> latestBlockOpt = blockRepo.findTopByOrderByIdDesc();
 
-        // Genesis case: agar koi block nahi mila to "0" set kare
         String previousHash = latestBlockOpt
                 .map(Block::getCurrentHash)
-                .orElse("0");// custom query
-//        String previousHash = (latestBlock != null) ? latestBlock.getCurrentHash() : "0"; // Genesis block case
+                .orElse("0");
 
         Block newBlock = Block.builder()
                 .previousHash(previousHash)
-                .data(blockData)  // e.g. JSON string: { electionId, candidateId, voterId }
+                .data(blockData)
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        // Hash generate
-        newBlock.generateHash();
+        // ✅ FIXED
+        String hash = calculateHash(newBlock);
+        newBlock.setCurrentHash(hash);
 
         newBlock.setElectionId(electionId);
-        // Save block in DB
+
         blockRepo.save(newBlock);
     }
 

@@ -1,5 +1,7 @@
 package com.onlineVotingApplication2.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -14,6 +16,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Candidate {
 
         @Id
@@ -22,15 +25,13 @@ public class Candidate {
 
     @NotBlank(message = "name is required")
         private String name;
-
         private String party;
-
         private int voteCount = 0;
-
         private String logo;
 
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Vote> votes;
 
     @ManyToOne
