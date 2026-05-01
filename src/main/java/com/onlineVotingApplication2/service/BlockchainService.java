@@ -58,6 +58,7 @@ public class BlockchainService {
         return true;
     }
 */
+
   public boolean verifyChain() {
       List<Block> blocks = blockRepo.findAll(Sort.by("id"));
 
